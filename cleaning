@@ -1,0 +1,27 @@
+# data cleaning
+
+library(dplyr)
+
+df <- read.csv("~/Desktop/FinalCAFData.sav.csv", header = TRUE)
+key <- read.csv("~/Desktop/key.csv", header = TRUE)
+
+# extrapolate key question titles down the data frame
+for (i in (1:nrow(key))) {
+  if (key$Question[i] == '') {
+    key$Question[i] = key$Question[i-1]
+  }
+  else {
+    next
+  }
+}
+
+# replace df answer values from the key
+for (j in (2:ncol(df))) {
+  qTitle <- names(df)[j]  # get question title
+  q.Key.Range <- key[(key$Question == qTitle),c(2,3)] #subset our key based on the question
+  df[[j]] <- q.Key.Range[match(df[[j]], q.Key.Range[['Value']] ) , 'Label'] #match responses from the survey with the key on "Label"
+}
+  
+  
+  
+  
